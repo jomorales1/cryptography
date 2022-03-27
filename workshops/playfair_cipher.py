@@ -25,7 +25,7 @@ def construct_matrix(keyword):
         if letter == 'i' or letter == 'j':
             positions['i'] = (row, col)
             positions['j'] = (row, col)
-            matrix[row].append('[ij]')
+            matrix[row].append('i')
             seen['i'] = True
             seen['j'] = True
         else:
@@ -38,14 +38,22 @@ def construct_matrix(keyword):
             col = 0
     print('\nMatriz generada:')
     for line in matrix:
-        print(line)
+        l_str = ''
+        for item in line:
+            if item == 'i':
+                l_str += '[ij]\t'
+            else:
+                l_str += item + '\t'
+        print(l_str.strip())
     return positions, matrix
 
 def encrypt(plain_text, keyword):
     plain_text = ''.join([letter for letter in plain_text.lower() if letter in letters])
     formatted = ''
-    for index in range(0, len(plain_text) - 1, 2):
+    for index in range(0, len(plain_text), 2):
         formatted = formatted + plain_text[index].lower()
+        if index == len(plain_text) - 1:
+            break
         if plain_text[index] == plain_text[index + 1]:
             formatted = formatted + 'x'
         formatted = formatted + plain_text[index + 1].lower()
@@ -110,7 +118,7 @@ def main():
         cipher_text = input('Ingrese el mensaje cifrado: ')
         keyword = input('Ingrese la clave: ')
         plain_text = decrypt(cipher_text, keyword)
-        result = ' '.join([part.upper() for part in plain_text.split('-') if part])
+        result = ' '.join([part.upper().replace('I', '[IJ]') for part in plain_text.split('-') if part])
         if plain_text:
             print(f'\nMensaje descifrado: {result.strip()}')
 
